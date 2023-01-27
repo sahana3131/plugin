@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My Plugin</title>
+  </head>
+  <body background=
+"https://www.crushpixel.com/big-static13/preview4/blue-technology-circle-computer-abstract-1217830.jpg">
+  </body>
+  <h1 style="text-align:center"><font color="white">SFTP Export Plugin</font></h1>
+  <h2 style="text-align:center"><font color="white">Configure your SFTP connection</font></h2>
+<form id="sftp-config-form"><font color="white">  <font size="300">
+  <div style="text-align:center">   
+  <label for="hostname">Hostname:</label><font color="white">   
+    <input type="text" id="hostname" name="hostname">
+  <br>
+  <label for="port">Port:</label><font color="white"> 
+  <input type="text" id="port" name="port">
+  <br>
+  <label for="username">Username:</label><font color="white"> 
+  <input type="text" id="username" name="username">
+  <br>
+  <label for="password">Password:</label><font color="white"> 
+  <input type="password" id="password" name="password">
+  <br>
+  <label for="remote_folder">Remote Folder:</label><font color="white"> 
+  <input type="text" id="remote_folder" name="remote_folder">
+  <br>
+  <input type="button" value="Save Configuration" onclick="saveConfiguration()">
+</form>
+<script src="https://cdn.jsdelivr.net/npm/jsftp@0.3.7/jsftp.min.js"></script>
+<script>
+  
+  function saveConfiguration() {
+    const hostname = document.getElementById("hostname").value;
+    const port = document.getElementById("port").value;
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+    const remote_folder = document.getElementById("remote_folder").value;
+    // create a new ftp object
+    var ftp = new Ftp({
+      host: hostname,
+      port: port,
+      user: username,
+      pass: password
+    });
+    var localFilePath = "C:/Users/SAHANA/Desktop/SAHANA-EDU/rev.csv";
+    var remoteFilePath = remote_folder+ '/rev.csv';
+  
+    ftp.auth(function(err, res) {
+      if (err) {
+        console.log("Error connecting to SFTP server: ", err);
+        alert("Error connecting to SFTP server, please check your configuration and try again.");
+      } else {
+        console.log('Connected to SFTP server');
+        ftp.put(localFilePath, remoteFilePath, function(hadError) {
+          if (!hadError) {
+            console.log("File transferred successfully!");
+            alert("File transferred successfully!");
+          } else {
+            console.log("There was an error uploading the file: ", hadError);
+            alert("There was an error uploading the file, please check your configuration and try again.");
+          }
+          ftp.raw.quit();
+        });
+      }
+    });
+  }
+  </script>
+</html> 
